@@ -1148,6 +1148,7 @@ function TE:GetLanguage()
 	if (lang == "fr") then return lang end
 	if (lang == "de") then return lang end
 	if (lang == "es") then return lang end
+	if (lang == "jp") then return lang end
 
 	--return english if not supported
 	return "en"
