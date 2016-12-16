@@ -1,4 +1,4 @@
-------------------------------------------
+﻿------------------------------------------
 --           TiEmote Extended           --
 --           by Rosie & Khrill          --
 --                                      --
@@ -58,6 +58,7 @@ TE.tex = "/esoui/art/miscellaneous/scrollbox_elevator.dds"
 TE.btnSize = 130
 TE.xOffset = {up = 0, down = 0, color = 0, Fav = 0, Panel = 160 }
 TE.yOffset = {up = 0, down = 0, color = 0, Fav = -5, Panel = 0 }
+TE.vars = nil
 
 local COLOR_KHRILLSELECT = "FF6A00" -- orange ^^
 local TEXTURES = {
@@ -173,7 +174,11 @@ function TE:OnReticleHidden(eventCode, hidden)
 	
 --	d(ZO_GameMenu_InGame:IsHidden())
 		if hidden then --and ZO_GameMenu_InGame:IsHidden() then
-			TE:ShowUI(TE.vars.openDeploy or TE.byKey)
+			if TE.vars == nil then
+				TE:ShowUI(TE.byKey)
+			else
+				TE:ShowUI(TE.vars.openDeploy or TE.byKey)
+			end
 			TiEmote:SetHidden(false)
 		else
 			TiEmote:SetHidden(true)
@@ -552,6 +557,16 @@ function TE:GetEmoteSlashName(emListId, list)
 	end
 end
 
+function TE:GetOriginalEmoteSlashName(emListId, list)
+	local emId = 0
+	if list == 0 then -- from emote list
+		emId = self:GetEmIndexFromEmListIndex(emListId)
+	else	-- from fav list
+		emId = emListId
+	end
+	
+	return GetEmoteSlashNameByIndex(emId)
+end
 
 --###  FAV  ###--
 -----------------
@@ -797,6 +812,12 @@ function TE:UpdateFav(group)
 				buttonControl:SetHidden(false)
 			end
 			buttonControl:SetText(TE:GetEmoteSlashName(TE.fav[group][i][2],1))
+
+			-- Added for outside of "en"
+			buttonControl:SetHandler("OnMouseEnter", function(self) ZO_Tooltips_ShowTextTooltip(self, TOP, TE:GetOriginalEmoteSlashName(TE.fav[group][i][2],1)) end)
+			buttonControl:SetHandler("OnMouseExit", function(self) ZO_Tooltips_HideTextTooltip() end)
+			-- Added end
+
 			color = TE:GetColor(TE.fav[group][i][3])
 			buttonControl:SetNormalFontColor(color[1], color[2], color[3], color[4])
 			buttonControl:SetMouseOverFontColor(color[1], color[2], color[3], color[4])
@@ -1178,6 +1199,7 @@ function TE:UpdateRandomButton()
 end
 
 function TE:ShowUI(state)
+
 	-- show all groups buttons or only title
 	for i=1,TiEmote:GetNumChildren() do
 		local name = TiEmote:GetChild(i):GetName()
@@ -1264,6 +1286,12 @@ function TE:InitUI()
 		ButtonControl:SetHandler("OnMouseDoubleClick", function(self) TE:NextColor(i) end)
 		ButtonControl:SetMouseOverFontColor(HexToRGBA("FF6A0000"))
 		ButtonControl:SetPressedFontColor(HexToRGBA("FF6A0000"))
+
+		-- Added for outside of "en"
+		ButtonControl:SetHandler("OnMouseEnter", function(self) ZO_Tooltips_ShowTextTooltip(self, TOP, TE:GetOriginalEmoteSlashName(i+1,0)) end)
+		ButtonControl:SetHandler("OnMouseExit", function(self) ZO_Tooltips_HideTextTooltip() end)
+		-- Added end
+
 	end
 	
 	-- slider
