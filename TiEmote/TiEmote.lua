@@ -174,7 +174,11 @@ function TE:OnReticleHidden(eventCode, hidden)
 	
 --	d(ZO_GameMenu_InGame:IsHidden())
 		if hidden then --and ZO_GameMenu_InGame:IsHidden() then
-			TE:ShowUI(TE.vars.openDeploy or TE.byKey)
+			if TE.vars == nil then
+				TE:ShowUI(TE.byKey)
+			else
+				TE:ShowUI(TE.vars.openDeploy or TE.byKey)
+			end
 			TiEmote:SetHidden(false)
 		else
 			TiEmote:SetHidden(true)
